@@ -22,6 +22,7 @@
                         "scripts/vagrant/virtualbox.sh",
                         "scripts/vagrant/vagrant.sh",
                         "scripts/common/setup.sh",
+                        "scripts/devenv/setup.sh",
                         "scripts/vagrant/cleanup.sh",
                         "scripts/vagrant/zerodisk.sh"
                     ],
