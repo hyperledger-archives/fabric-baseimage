@@ -4,19 +4,15 @@
         "vcs": true
     },
     "variables": {
-        "artifact": "baseimage",
+        "artifact": "{{env `ATLAS_ARTIFACT`}}",
         "release": "{{env `BASEIMAGE_RELEASE`}}",
-        "dockerhub_email": "{{env `DOCKERHUB_EMAIL`}}",
-        "dockerhub_username": "{{env `DOCKERHUB_USERNAME`}}",
-        "dockerhub_password": "{{env `DOCKERHUB_PASSWORD`}}"
+        "outputfile": "{{env `OUTPUT_FILE`}}"
     },
     "provisioners": [
         {
             "type": "shell",
             "environment_vars": ["BASEIMAGE_RELEASE={{user `release`}}"],
-            "override": {
-                "virtualbox-iso": {
-                    "scripts": [
+            "scripts": [
                         "scripts/common/init.sh",
                         "scripts/vagrant/init.sh",
                         "scripts/vagrant/virtualbox.sh",
@@ -26,9 +22,7 @@
                         "scripts/vagrant/cleanup.sh",
                         "scripts/vagrant/zerodisk.sh"
                     ],
-                    "execute_command": "echo 'vagrant'|sudo -S {{.Vars}} bash '{{.Path}}'"
-                }
-            }
+            "execute_command": "echo 'vagrant'|sudo -S {{.Vars}} bash '{{.Path}}'"
         }
     ],
     "builders": [
@@ -75,8 +69,7 @@
             "hard_drive_interface": "sata",
             "vboxmanage": [
                 ["modifyvm", "{{.Name}}", "--vrde", "off"],
-                ["modifyvm", "{{.Name}}", "--pae", "off"],
-                ["modifyvm", "{{.Name}}", "--paravirtprovider", "legacy"]
+                ["modifyvm", "{{.Name}}", "--pae", "off"]
             ]
         }
     ],
@@ -84,22 +77,18 @@
         [
             {
                 "type": "vagrant",
-                "only": [
-                    "virtualbox-iso"
-                ],
+                "output": "{{user `outputfile`}}",
                 "keep_input_artifact": false
             },
             {
                 "type": "atlas",
-                "only": [
-                    "virtualbox-iso"
-                ],
-                "artifact": "hyperledger/{{user `artifact`}}",
+                "artifact": "{{user `artifact`}}",
                 "artifact_type": "vagrant.box",
                 "metadata": {
                     "provider": "virtualbox",
                     "version": "{{user `release`}}"
-                }
+                },
+                "keep_input_artifact": false
             }
         ]
     ]
