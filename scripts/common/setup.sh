@@ -151,6 +151,10 @@ INSTALL_PATH=/usr/local make install-shared
 ldconfig
 cd ~/
 
+# Install JDK 1.8
+add-apt-repository ppa:openjdk-r/ppa -y
+apt-get update && apt-get install openjdk-8-jdk -y
+
 # Make our versioning persistent
 echo $BASEIMAGE_RELEASE > /etc/hyperledger-baseimage-release
 
