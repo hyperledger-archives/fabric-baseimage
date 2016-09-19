@@ -1,8 +1,10 @@
 FROM _DOCKER_BASE_
 COPY scripts /hyperledger/baseimage/scripts
-RUN /hyperledger/baseimage/scripts/common/init.sh
-RUN /hyperledger/baseimage/scripts/docker/init.sh
-RUN /hyperledger/baseimage/scripts/common/setup.sh
+RUN cd /hyperledger/baseimage/scripts && \
+    common/init.sh && \
+    docker/init.sh && \
+    common/setup.sh && \
+    docker/fixup.sh
 ENV GOPATH=/opt/gopath
 ENV GOROOT=/opt/go
 ENV PATH=$PATH:$GOROOT/bin:$GOPATH/bin
