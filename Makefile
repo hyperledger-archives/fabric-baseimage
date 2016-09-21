@@ -1,5 +1,6 @@
 NAME ?= hyperledger/fabric-baseimage
 VERSION ?= $(shell cat ./release)
+IS_RELEASE=true
 
 ARCH=$(shell uname -m)
 DOCKER_TAG ?= $(ARCH)-$(VERSION)
