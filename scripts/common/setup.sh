@@ -26,8 +26,9 @@ fi
 # Set Go environment variables needed by other scripts
 export GOPATH="/opt/gopath"
 
-#install golang
-#apt-get install --yes golang
+# ----------------------------------------------------------------
+# Install Golang
+# ----------------------------------------------------------------
 mkdir -p $GOPATH
 if [ x$MACHINE = xppc64le ]
 then
@@ -62,39 +63,33 @@ export PATH=\$PATH:$GOROOT/bin:$GOPATH/bin
 EOF
 
 
+# ----------------------------------------------------------------
 # Install NodeJS
-
-if [ x$MACHINE = xs390x ]
-then
-    apt-get install --yes nodejs
-elif [ x$MACHINE = xppc64le ]
-then
-    apt-get install --yes nodejs
-else
-    NODE_VER=0.12.7
-    NODE_PACKAGE=node-v$NODE_VER-linux-x64.tar.gz
-    TEMP_DIR=/tmp
-    SRC_PATH=$TEMP_DIR/$NODE_PACKAGE
-
-    # First remove any prior packages downloaded in case of failure
-    cd $TEMP_DIR
-    rm -f node*.tar.gz
-    wget --quiet https://nodejs.org/dist/v$NODE_VER/$NODE_PACKAGE
-    cd /usr/local && sudo tar --strip-components 1 -xzf $SRC_PATH
-fi
-
-# Install GRPC
-
 # ----------------------------------------------------------------
-# NOTE: For instructions, see https://github.com/google/protobuf
-#
-# ----------------------------------------------------------------
+NODE_VER=6.7.0
 
-# First install protoc
+ARCH=`uname -m | sed 's|i686|x86|' | sed 's|x86_64|x64|'`
+NODE_PKG=node-v$NODE_VER-linux-$ARCH.tar.gz
+SRC_PATH=/tmp/$NODE_PKG
+
+# First remove any prior packages downloaded in case of failure
 cd /tmp
-wget --quiet https://github.com/google/protobuf/archive/v3.0.2.tar.gz
-tar xpzf v3.0.2.tar.gz
-cd protobuf-3.0.2
+rm -f node*.tar.gz
+wget --quiet https://nodejs.org/dist/v$NODE_VER/$NODE_PKG
+cd /usr/local && sudo tar --strip-components 1 -xzf $SRC_PATH
+
+# ----------------------------------------------------------------
+# Install protocol buffer support
+#
+# See https://github.com/google/protobuf
+# ----------------------------------------------------------------
+PROTOBUF_VER=3.0.2
+PROTOBUF_PKG=v$PROTOBUF_VER.tar.gz
+
+cd /tmp
+wget --quiet https://github.com/google/protobuf/archive/$PROTOBUF_PKG
+tar xpzf $PROTOBUF_PKG
+cd protobuf-$PROTOBUF_VER
 apt-get install -y autoconf automake libtool curl make g++ unzip
 apt-get install -y build-essential
 ./autogen.sh
@@ -119,7 +114,9 @@ fi
 export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
 cd ~/
 
+# ----------------------------------------------------------------
 # Install rocksdb
+# ----------------------------------------------------------------
 apt-get install -y libsnappy-dev zlib1g-dev libbz2-dev
 cd /tmp
 git clone https://github.com/facebook/rocksdb.git
@@ -142,7 +139,9 @@ INSTALL_PATH=/usr/local make install-shared
 ldconfig
 cd ~/
 
+# ----------------------------------------------------------------
 # Install JDK 1.8
+# ----------------------------------------------------------------
 add-apt-repository ppa:openjdk-r/ppa -y
 apt-get update && apt-get install openjdk-8-jdk -y
 
