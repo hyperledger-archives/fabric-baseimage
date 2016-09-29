@@ -29,11 +29,7 @@ export GOPATH="/opt/gopath"
 #install golang
 #apt-get install --yes golang
 mkdir -p $GOPATH
-if [ x$MACHINE = xs390x ]
-then
-   apt-get install --yes golang
-   export GOROOT="/usr/lib/go-1.6"
-elif [ x$MACHINE = xppc64le ]
+if [ x$MACHINE = xppc64le ]
 then
    wget ftp://ftp.unicamp.br/pub/linuxpatch/toolchain/at/ubuntu/dists/trusty/at9.0/binary-ppc64el/advance-toolchain-at9.0-golang_9.0-3_ppc64el.deb
    dpkg -i advance-toolchain-at9.0-golang_9.0-3_ppc64el.deb
@@ -43,13 +39,11 @@ then
    update-alternatives --install /usr/bin/gofmt gofmt /usr/local/go/bin/gofmt 9
 
    export GOROOT="/usr/local/go"
-elif [ x$MACHINE = xx86_64 ]
-then
+else
    export GOROOT="/opt/go"
 
-   #ARCH=`uname -m | sed 's|i686|386|' | sed 's|x86_64|amd64|'`
-   ARCH=amd64
-   GO_VER=1.6
+   ARCH=`uname -m | sed 's|i686|386|' | sed 's|x86_64|amd64|'`
+   GO_VER=1.7.1
 
    cd /tmp
    wget --quiet --no-check-certificate https://storage.googleapis.com/golang/go$GO_VER.linux-${ARCH}.tar.gz
@@ -57,9 +51,6 @@ then
    mv go $GOROOT
    chmod 775 $GOROOT
    rm go$GO_VER.linux-${ARCH}.tar.gz
-else
-  echo "TODO: Add $MACHINE support"
-  exit
 fi
 
 PATH=$GOROOT/bin:$GOPATH/bin:$PATH
