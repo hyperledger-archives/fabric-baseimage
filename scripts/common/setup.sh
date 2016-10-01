@@ -17,11 +17,6 @@ apt-get dist-upgrade -qqy
 apt-get install --yes git
 
 MACHINE=`uname -m`
-if [ x$MACHINE = xppc64le ]
-then
-   # install sudo
-   apt-get install --yes sudo
-fi
 
 # Set Go environment variables needed by other scripts
 export GOPATH="/opt/gopath"

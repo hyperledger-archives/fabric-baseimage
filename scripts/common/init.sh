@@ -2,4 +2,4 @@
 
 # Update the box
 apt-get -y update
-apt-get -y install software-properties-common curl
+apt-get -y install software-properties-common curl sudo
