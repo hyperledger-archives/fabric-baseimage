@@ -82,8 +82,13 @@ PROTOBUF_VER=3.0.2
 PROTOBUF_PKG=v$PROTOBUF_VER.tar.gz
 
 cd /tmp
-wget --quiet https://github.com/google/protobuf/archive/$PROTOBUF_PKG
-tar xpzf $PROTOBUF_PKG
+if [ x$MACHINE = xs390x ]
+then
+    git clone -b $PROTOBUF_VER https://github.com/linux-on-ibm-z/protobuf.git protobuf-$PROTOBUF_VER
+else
+    wget --quiet https://github.com/google/protobuf/archive/$PROTOBUF_PKG
+    tar xpzf $PROTOBUF_PKG
+fi
 cd protobuf-$PROTOBUF_VER
 apt-get install -y autoconf automake libtool curl make g++ unzip
 apt-get install -y build-essential
@@ -98,14 +103,9 @@ apt-get install -y build-essential
 #./configure
 ./configure --prefix=/usr
 
-if [ x$MACHINE = xs390x ]
-then
-    echo FIXME: protobufs wont compile on 390, missing atomic call
-else
-    make
-    make check
-    make install
-fi
+make
+make check
+make install
 export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
 cd ~/
 
