@@ -13,8 +13,8 @@ set -x
 apt-get update -qq
 apt-get dist-upgrade -qqy
 
-# install git
-apt-get install --yes git
+# install common tools
+apt-get install --yes git net-tools netcat-openbsd
 
 MACHINE=`uname -m`
 
