@@ -78,7 +78,7 @@ cd /usr/local && sudo tar --strip-components 1 -xzf $SRC_PATH
 #
 # See https://github.com/google/protobuf
 # ----------------------------------------------------------------
-PROTOBUF_VER=3.0.2
+PROTOBUF_VER=3.1.0
 PROTOBUF_PKG=v$PROTOBUF_VER.tar.gz
 
 cd /tmp
