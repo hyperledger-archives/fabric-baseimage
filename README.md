@@ -1,9 +1,9 @@
 # Baseimage Introduction
-This directory contains the infrastructure for creating a new baseimage used as the basis for various functions within the Hyperledger workflow such as our Vagrant based development environment, chaincode compilation/execution, unit-testing, and even cluster simulation. It is based on ubuntu-14.04 with various opensource projects added such as golang, rocksdb, grpc, and node.js. The actual Hyperledger code is injected just-in-time before deployment.  The resulting images are published to public repositories such as [atlas.hashicorp.com](https://atlas.hashicorp.com/hyperledger/boxes/fabric-baseimage) for consumption by Vagrant/developers and [hub.docker.com](https://hub.docker.com/r/hyperledger/fabric-baseimage/) for consumption by docker-based workflows.
+This directory contains the infrastructure for creating a new baseimage used as the basis for various functions within the Hyperledger workflow such as our Vagrant based development environment, chaincode compilation/execution, unit-testing, and even cluster simulation. It is based on ubuntu-16.04 with various opensource projects added such as golang, rocksdb, grpc, and node.js. The actual Hyperledger code is injected just-in-time before deployment.  The resulting images are published to public repositories such as [atlas.hashicorp.com](https://atlas.hashicorp.com/hyperledger/boxes/fabric-baseimage) for consumption by Vagrant/developers and [hub.docker.com](https://hub.docker.com/r/hyperledger/fabric-baseimage/) for consumption by docker-based workflows.
 
 ![Baseimage Architectural Overview](./images/packer-overview.png)
 
-The purpose of this baseimage is to act as a bridge between a raw ubuntu/trusty64 configuration and the customizations required for supporting a hyperledger environment.  Some of the FOSS components that need to be added to Ubuntu do not have convenient native packages.  Therefore, they are built from source.  However, the build process is generally expensive (often taking in excess of 30 minutes) so it is fairly inefficient to JIT assemble these components on demand.
+The purpose of this baseimage is to act as a bridge between a raw ubuntu/xenial configuration and the customizations required for supporting a hyperledger environment.  Some of the FOSS components that need to be added to Ubuntu do not have convenient native packages.  Therefore, they are built from source.  However, the build process is generally expensive (often taking in excess of 30 minutes) so it is fairly inefficient to JIT assemble these components on demand.
 
 Therefore, the expensive FOSS components are built into this baseimage once and subsequently cached on the public repositories so that workflows may simply consume the objects without requiring a local build cycle.
 
@@ -22,7 +22,7 @@ If a component is found to be both broadly applicable and expensive to build JIT
 
 * "make vagrant" will build just the vagrant image and install it into the local environment as "hyperledger/fabric-baseimage:v0", making it suitable to local testing.
   * To utilize the new base image in your local tests, run `vagrant destroy` then `USE_LOCAL_BASEIMAGE=true vagrant up`, also preface `vagrant ssh` as `USE_LOCAL_BASEIMAGE=true vagrant ssh` or simply export that variable, or Vagrant will fail to find the ssh key.
-* "make docker" will build just the docker image and commit it to your local environment as "hyperledger/fabric-baseimage"
+* "make docker-local" will build just the docker image and commit it to your local environment as "hyperledger/fabric-baseimage". The docker image is also tagged with architecture and release details.
 
 ## Usage Pattern 2 - Release manager promoting a new base image to the public repositories
 
