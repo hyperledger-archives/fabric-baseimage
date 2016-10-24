@@ -25,7 +25,21 @@ export GOPATH="/opt/gopath"
 # Install Golang
 # ----------------------------------------------------------------
 mkdir -p $GOPATH
-if [ x$MACHINE = xppc64le ]
+
+if [ x$MACHINE = xs390x ]
+then
+   cd /tmp
+   wget --quiet --no-check-certificate https://storage.googleapis.com/golang/go1.7.1.linux-s390x.tar.gz
+   tar -xvf go1.7.1.linux-s390x.tar.gz
+   apt-get install -y g++
+   cd /opt
+   git clone http://github.com/linux-on-ibm-z/go.git go
+   cd go/src
+   git checkout release-branch.go1.6-p256
+   export GOROOT_BOOTSTRAP=/tmp/go
+   ./make.bash
+   export GOROOT="/opt/go"
+elif [ x$MACHINE = xppc64le ]
 then
    wget ftp://ftp.unicamp.br/pub/linuxpatch/toolchain/at/ubuntu/dists/trusty/at9.0/binary-ppc64el/advance-toolchain-at9.0-golang_9.0-3_ppc64el.deb
    dpkg -i advance-toolchain-at9.0-golang_9.0-3_ppc64el.deb
@@ -46,7 +60,6 @@ else
    tar -xvf go$GO_VER.linux-${ARCH}.tar.gz
    mv go $GOROOT
    chmod 775 $GOROOT
-   rm go$GO_VER.linux-${ARCH}.tar.gz
 fi
 
 PATH=$GOROOT/bin:$GOPATH/bin:$PATH
@@ -57,6 +70,33 @@ export GOPATH=$GOPATH
 export PATH=\$PATH:$GOROOT/bin:$GOPATH/bin
 EOF
 
+# ----------------------------------------------------------------
+# Install JDK 1.8
+# ----------------------------------------------------------------
+if [ x$MACHINE = xs390x -o x$MACHINE = xppc64le ]
+then
+    # Java is required for node.bin below. InstallAnywhere requirement.
+    # See https://github.com/ibmruntimes/ci.docker/blob/master/ibmjava/8-sdk/s390x/ubuntu/Dockerfile
+    JAVA_VERSION=1.8.0_sr3fp12
+    ESUM_s390x="46766ac01bc2b7d2f3814b6b1561e2d06c7d92862192b313af6e2f77ce86d849"
+    ESUM_ppc64le="6fb86f2188562a56d4f5621a272e2cab1ec3d61a13b80dec9dc958e9568d9892"
+    eval ESUM=\$ESUM_$MACHINE
+    BASE_URL="https://public.dhe.ibm.com/ibmdl/export/pub/systems/cloud/runtimes/java/meta/"
+    YML_FILE="sdk/linux/$MACHINE/index.yml"
+    wget -q -U UA_IBM_JAVA_Docker -O /tmp/index.yml $BASE_URL/$YML_FILE
+    JAVA_URL=$(cat /tmp/index.yml | sed -n '/'$JAVA_VERSION'/{n;p}' | sed -n 's/\s*uri:\s//p' | tr -d '\r')
+    wget -q -U UA_IBM_JAVA_Docker -O /tmp/ibm-java.bin $JAVA_URL
+    echo "$ESUM  /tmp/ibm-java.bin" | sha256sum -c -
+    echo "INSTALLER_UI=silent" > /tmp/response.properties
+    echo "USER_INSTALL_DIR=/opt/ibm/java" >> /tmp/response.properties
+    echo "LICENSE_ACCEPTED=TRUE" >> /tmp/response.properties
+    mkdir -p /opt/ibm
+    chmod +x /tmp/ibm-java.bin
+    /tmp/ibm-java.bin -i silent -f /tmp/response.properties
+    ln -s /opt/ibm/java/jre/bin/* /usr/local/bin/
+else
+    apt-get update && apt-get install openjdk-8-jdk -y
+fi
 
 # ----------------------------------------------------------------
 # Install NodeJS
@@ -82,13 +122,8 @@ PROTOBUF_VER=3.1.0
 PROTOBUF_PKG=v$PROTOBUF_VER.tar.gz
 
 cd /tmp
-if [ x$MACHINE = xs390x ]
-then
-    git clone -b $PROTOBUF_VER https://github.com/linux-on-ibm-z/protobuf.git protobuf-$PROTOBUF_VER
-else
-    wget --quiet https://github.com/google/protobuf/archive/$PROTOBUF_PKG
-    tar xpzf $PROTOBUF_PKG
-fi
+wget --quiet https://github.com/google/protobuf/archive/$PROTOBUF_PKG
+tar xpzf $PROTOBUF_PKG
 cd protobuf-$PROTOBUF_VER
 apt-get install -y autoconf automake libtool curl make g++ unzip
 apt-get install -y build-essential
@@ -133,11 +168,6 @@ PORTABLE=1 make shared_lib
 INSTALL_PATH=/usr/local make install-shared
 ldconfig
 cd ~/
-
-# ----------------------------------------------------------------
-# Install JDK 1.8
-# ----------------------------------------------------------------
-apt-get update && apt-get install openjdk-8-jdk -y
 
 # Make our versioning persistent
 echo $BASEIMAGE_RELEASE > /etc/hyperledger-baseimage-release
