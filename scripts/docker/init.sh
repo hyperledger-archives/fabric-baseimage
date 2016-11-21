@@ -1,4 +1,4 @@
 #!/bin/bash
 
-apt-get update
-apt-get install -y wget
+yum update
+yum install -y wget
