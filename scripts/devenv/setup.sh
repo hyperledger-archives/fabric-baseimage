@@ -16,10 +16,6 @@ apt-get update -qq
 # Install docker
 apt-get install -y linux-image-extra-$(uname -r) apparmor docker-engine
 
-# Install docker-compose
-curl -L https://github.com/docker/compose/releases/download/1.5.2/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
-chmod +x /usr/local/bin/docker-compose
-
 # Install Python, pip, behave, nose
 #
 # install python-dev and libyaml-dev to get compiled speedups
