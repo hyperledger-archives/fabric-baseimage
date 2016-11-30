@@ -16,50 +16,49 @@ apt-get dist-upgrade -qqy
 # install common tools
 apt-get install --yes git net-tools netcat-openbsd
 
-MACHINE=`uname -m`
-
 # Set Go environment variables needed by other scripts
 export GOPATH="/opt/gopath"
+export GOROOT="/opt/go"
 
 # ----------------------------------------------------------------
 # Install Golang
 # ----------------------------------------------------------------
 mkdir -p $GOPATH
+ARCH=`uname -m | sed 's|i686|386|' | sed 's|x86_64|amd64|'`
+BINTARGETS="x86_64 s390x"
+GO_VER=1.7.3
 
-if [ x$MACHINE = xs390x ]
-then
+# Install Golang binary if found in BINTARGETS
+if echo $BINTARGETS | grep -q `uname -m`; then
    cd /tmp
-   wget --quiet --no-check-certificate https://storage.googleapis.com/golang/go1.7.1.linux-s390x.tar.gz
-   tar -xvf go1.7.1.linux-s390x.tar.gz
-   apt-get install -y g++
-   cd /opt
-   git clone http://github.com/linux-on-ibm-z/go.git go
-   cd go/src
-   git checkout release-branch.go1.6-p256
-   export GOROOT_BOOTSTRAP=/tmp/go
-   ./make.bash
-   export GOROOT="/opt/go"
-elif [ x$MACHINE = xppc64le ]
-then
-   wget ftp://ftp.unicamp.br/pub/linuxpatch/toolchain/at/ubuntu/dists/trusty/at9.0/binary-ppc64el/advance-toolchain-at9.0-golang_9.0-3_ppc64el.deb
-   dpkg -i advance-toolchain-at9.0-golang_9.0-3_ppc64el.deb
-   rm advance-toolchain-at9.0-golang_9.0-3_ppc64el.deb
-
-   update-alternatives --install /usr/bin/go go /usr/local/go/bin/go 9
-   update-alternatives --install /usr/bin/gofmt gofmt /usr/local/go/bin/gofmt 9
-
-   export GOROOT="/usr/local/go"
-else
-   export GOROOT="/opt/go"
-
-   ARCH=`uname -m | sed 's|i686|386|' | sed 's|x86_64|amd64|'`
-   GO_VER=1.7.1
-
-   cd /tmp
-   wget --quiet --no-check-certificate https://storage.googleapis.com/golang/go$GO_VER.linux-${ARCH}.tar.gz
-   tar -xvf go$GO_VER.linux-${ARCH}.tar.gz
+   wget --quiet --no-check-certificate https://storage.googleapis.com/golang/go${GO_VER}.linux-${ARCH}.tar.gz
+   tar -xvf go${GO_VER}.linux-${ARCH}.tar.gz
    mv go $GOROOT
    chmod 775 $GOROOT
+# else for ppc64le install go binaries from advanced toolchain
+elif [ $ARCH = ppc64le ]
+then
+   wget --quiet ftp://ftp.unicamp.br/pub/linuxpatch/toolchain/at/ubuntu/dists/xenial/at10.0/binary-ppc64el/advance-toolchain-golang-at_10.0-1_ppc64el.deb
+   dpkg -i advance-toolchain-golang-at_10.0-1_ppc64el.deb
+   rm advance-toolchain-golang-at_10.0-1_ppc64el.deb
+
+   update-alternatives --install /usr/bin/go go /usr/local/go/bin/go 10
+   update-alternatives --install /usr/bin/gofmt gofmt /usr/local/go/bin/gofmt 10
+
+   ln -s /usr/local/go $GOROOT
+# Otherwise, build Golang from source
+else
+   # Install Golang 1.6 binary as a bootstrap to compile the Golang GO_VER source
+   apt-get -y install golang-1.6
+
+   cd /tmp
+   wget --quiet --no-check-certificate https://storage.googleapis.com/golang/go${GO_VER}.src.tar.gz
+   tar -xzf go${GO_VER}.src.tar.gz -C /opt
+
+   cd $GOROOT/src
+   export GOROOT_BOOTSTRAP="/usr/lib/go-1.6"
+   ./make.bash
+   apt-get -y remove golang-1.6
 fi
 
 PATH=$GOROOT/bin:$GOPATH/bin:$PATH
@@ -73,16 +72,15 @@ EOF
 # ----------------------------------------------------------------
 # Install JDK 1.8
 # ----------------------------------------------------------------
-if [ x$MACHINE = xs390x -o x$MACHINE = xppc64le ]
-then
+if [ $ARCH = s390x -o $ARCH = ppc64le ]; then
     # Java is required for node.bin below. InstallAnywhere requirement.
     # See https://github.com/ibmruntimes/ci.docker/blob/master/ibmjava/8-sdk/s390x/ubuntu/Dockerfile
     JAVA_VERSION=1.8.0_sr3fp12
     ESUM_s390x="46766ac01bc2b7d2f3814b6b1561e2d06c7d92862192b313af6e2f77ce86d849"
     ESUM_ppc64le="6fb86f2188562a56d4f5621a272e2cab1ec3d61a13b80dec9dc958e9568d9892"
-    eval ESUM=\$ESUM_$MACHINE
+    eval ESUM=\$ESUM_$ARCH
     BASE_URL="https://public.dhe.ibm.com/ibmdl/export/pub/systems/cloud/runtimes/java/meta/"
-    YML_FILE="sdk/linux/$MACHINE/index.yml"
+    YML_FILE="sdk/linux/$ARCH/index.yml"
     wget -q -U UA_IBM_JAVA_Docker -O /tmp/index.yml $BASE_URL/$YML_FILE
     JAVA_URL=$(cat /tmp/index.yml | sed -n '/'$JAVA_VERSION'/{n;p}' | sed -n 's/\s*uri:\s//p' | tr -d '\r')
     wget -q -U UA_IBM_JAVA_Docker -O /tmp/ibm-java.bin $JAVA_URL
