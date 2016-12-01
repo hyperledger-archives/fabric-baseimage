@@ -144,31 +144,6 @@ make install
 export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
 cd ~/
 
-# ----------------------------------------------------------------
-# Install rocksdb
-# ----------------------------------------------------------------
-apt-get install -y libsnappy-dev zlib1g-dev libbz2-dev
-cd /tmp
-git clone https://github.com/facebook/rocksdb.git
-cd rocksdb
-git checkout tags/v4.1
-if [ x$MACHINE = xs390x ]
-then
-    echo There were some bugs in 4.1 for z/p, dev stream has the fix, living dangereously, fixing in place
-    sed -i -e "s/-march=native/-march=z196/" build_tools/build_detect_platform
-    sed -i -e "s/-momit-leaf-frame-pointer/-DDUMBDUMMY/" Makefile
-elif [ x$MACHINE = xppc64le ]
-then
-    echo There were some bugs in 4.1 for z/p, dev stream has the fix, living dangereously, fixing in place.
-    echo Below changes are not required for newer releases of rocksdb.
-    sed -ibak 's/ifneq ($(MACHINE),ppc64)/ifeq (,$(findstring ppc64,$(MACHINE)))/g' Makefile
-fi
-
-PORTABLE=1 make shared_lib
-INSTALL_PATH=/usr/local make install-shared
-ldconfig
-cd ~/
-
 # Make our versioning persistent
 echo $BASEIMAGE_RELEASE > /etc/hyperledger-baseimage-release
 
