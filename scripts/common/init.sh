@@ -1,5 +1,5 @@
 #!/bin/bash
 
-# Update the box
-apt-get -y update
-apt-get -y install software-properties-common curl sudo
+# Update the entire system to the latest releases
+apt-get -qq update
+apt-get dist-upgrade -qqy
