@@ -14,11 +14,14 @@
             "environment_vars": ["BASEIMAGE_RELEASE={{user `release`}}"],
             "scripts": [
                         "scripts/common/init.sh",
+                        "scripts/common/packages.sh",
                         "scripts/vagrant/init.sh",
                         "scripts/vagrant/virtualbox.sh",
                         "scripts/vagrant/vagrant.sh",
+				        "scripts/common/jvm.sh",
                         "scripts/common/setup.sh",
-                        "scripts/devenv/setup.sh",
+				        "scripts/devenv/setup.sh",
+				        "scripts/common/cleanup.sh",
                         "scripts/vagrant/cleanup.sh",
                         "scripts/vagrant/zerodisk.sh"
                     ],
