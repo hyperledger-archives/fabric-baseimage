@@ -2,7 +2,7 @@ DOCKER_NS ?= hyperledger
 BASENAME ?= $(DOCKER_NS)/fabric
 NAME ?= $(BASENAME)-baseimage
 VERSION ?= $(shell cat ./release)
-IS_RELEASE=true
+IS_RELEASE=false
 
 ARCH=$(shell uname -m)
 DOCKER_TAG ?= $(ARCH)-$(VERSION)
