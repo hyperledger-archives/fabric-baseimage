@@ -47,7 +47,7 @@ build/docker/%/.push: build/docker/%/$(DUMMY)
 		--email=$(DOCKER_HUB_EMAIL) \
 		--username=$(DOCKER_HUB_USERNAME) \
 		--password=$(DOCKER_HUB_PASSWORD)
-	@docker push $(BASENAME)-$(subst -push,,$@):$(DOCKER_TAG)
+	@docker push $(BASENAME)-$(patsubst build/docker/%/.push,%,$@):$(DOCKER_TAG)
 
 # strips off the post-processors that try to upload artifacts to the cloud
 packer-local.json: packer.json
