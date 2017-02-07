@@ -29,7 +29,7 @@ If a component is found to be both broadly applicable and expensive to build JIT
 - Step 1: Decide on the version number to be used and update the packer.json template variables:release
 - Step 2: Initiate a build
 
-Note: You will need credentials to the public repositories, as discussed in Uploading Permissions below.  If you do not have these credentials, you are probably not an image release manager.  Otherwise, discuss it on the Hyperledger slack to see if you should be added.
+Note: You will need credentials to the public repositories, as discussed in Uploading Permissions below.  If you do not have these credentials, you are probably not an image release manager.  Otherwise, discuss it on the [Hyperledger chat](https://chat.hyperledger.org) to see if you should be added.
 
 ### Hosted Build Method
 
