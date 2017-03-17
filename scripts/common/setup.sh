@@ -14,7 +14,9 @@ apt-get update -qq
 apt-get dist-upgrade -qqy
 
 # install common tools
-apt-get install --yes git net-tools netcat-openbsd
+COMMON_TOOLS="git net-tools netcat-openbsd autoconf automake libtool curl make g++ unzip build-essential"
+#apt-get install -y git net-tools netcat-openbsd
+apt-get install -y $COMMON_TOOLS
 
 # Set Go environment variables needed by other scripts
 export GOPATH="/opt/gopath"
@@ -25,7 +27,7 @@ export GOROOT="/opt/go"
 # ----------------------------------------------------------------
 mkdir -p $GOPATH
 ARCH=`uname -m | sed 's|i686|386|' | sed 's|x86_64|amd64|'`
-BINTARGETS="x86_64 s390x"
+BINTARGETS="x86_64"
 GO_VER=1.7.3
 
 # Install Golang binary if found in BINTARGETS
@@ -35,6 +37,18 @@ if echo $BINTARGETS | grep -q `uname -m`; then
    tar -xvf go${GO_VER}.linux-${ARCH}.tar.gz
    mv go $GOROOT
    chmod 775 $GOROOT
+# else for s390x install go binaries that include Crypto ECC optimizations
+elif [ $ARCH = s390x ]
+then
+   cd /tmp
+   wget --quiet --no-check-certificate https://storage.googleapis.com/golang/go1.7.1.linux-s390x.tar.gz
+   tar -xvf go1.7.1.linux-s390x.tar.gz
+   cd /opt
+   git clone -b 1.7elliptic  https://github.com/billotosyr/go.git
+   cd go/src
+   export GOROOT_BOOTSTRAP=/tmp/go
+   ./make.bash
+   export GOROOT="/opt/go"
 # else for ppc64le install go binaries from advanced toolchain
 elif [ $ARCH = ppc64le ]
 then
@@ -72,7 +86,7 @@ EOF
 # ----------------------------------------------------------------
 # Install NodeJS
 # ----------------------------------------------------------------
-NODE_VER=6.7.0
+NODE_VER=6.9.5
 
 ARCH=`uname -m | sed 's|i686|x86|' | sed 's|x86_64|x64|'`
 NODE_PKG=node-v$NODE_VER-linux-$ARCH.tar.gz
@@ -96,8 +110,6 @@ cd /tmp
 wget --quiet https://github.com/google/protobuf/archive/$PROTOBUF_PKG
 tar xpzf $PROTOBUF_PKG
 cd protobuf-$PROTOBUF_VER
-apt-get install -y autoconf automake libtool curl make g++ unzip
-apt-get install -y build-essential
 ./autogen.sh
 # NOTE: By default, the package will be installed to /usr/local. However, on many platforms, /usr/local/lib is not part of LD_LIBRARY_PATH.
 # You can add it, but it may be easier to just install to /usr instead.
