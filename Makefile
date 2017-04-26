@@ -1,12 +1,18 @@
 DOCKER_NS ?= hyperledger
 BASENAME ?= $(DOCKER_NS)/fabric
-NAME ?= $(BASENAME)-baseimage
-VERSION ?= $(shell cat ./release)
+VERSION ?= 0.3.1
 IS_RELEASE=false
 
 ARCH=$(shell uname -m)
-DOCKER_TAG ?= $(ARCH)-$(VERSION)
-VAGRANTIMAGE=baseimage-v$(VERSION).box
+BASE_VERSION ?= $(ARCH)-$(VERSION)
+
+ifneq ($(IS_RELEASE),true)
+EXTRA_VERSION ?= snapshot-$(shell git rev-parse --short HEAD)
+DOCKER_TAG=$(BASE_VERSION)-$(EXTRA_VERSION)
+else
+DOCKER_TAG=$(BASE_VERSION)
+endif
+
 
 DOCKER_BASE_x86_64=ubuntu:xenial
 DOCKER_BASE_s390x=s390x/debian:jessie
@@ -22,7 +28,7 @@ endif
 DOCKER_IMAGES = baseos basejvm baseimage
 DUMMY = .$(DOCKER_TAG)
 
-all: vagrant docker
+all: docker
 
 build/docker/basejvm/$(DUMMY): build/docker/baseos/$(DUMMY)
 build/docker/baseimage/$(DUMMY): build/docker/basejvm/$(DUMMY)
@@ -50,33 +56,9 @@ build/docker/%/.push: build/docker/%/$(DUMMY)
 		--password=$(DOCKER_HUB_PASSWORD)
 	@docker push $(BASENAME)-$(patsubst build/docker/%/.push,%,$@):$(DOCKER_TAG)
 
-# strips off the post-processors that try to upload artifacts to the cloud
-packer-local.json: packer.json
-	jq 'del(."post-processors"[0][1])' packer.json > $@
+docker: $(patsubst %,build/docker/%/$(DUMMY),$(DOCKER_IMAGES))
 
-%.box:
-	ATLAS_ARTIFACT=$(NAME) \
-	BASEIMAGE_RELEASE=$(VERSION) \
-	OUTPUT_FILE=$@ \
-	packer build $<
-
-baseimage-public.box: packer.json
-$(VAGRANTIMAGE): packer-local.json
-
-docker-local: $(patsubst %,build/docker/%/$(DUMMY),$(DOCKER_IMAGES))
-
-docker: $(patsubst %,build/docker/%/.push,$(DOCKER_IMAGES))
-
-vagrant: baseimage-public.box Makefile
-
-vagrant-local: $(VAGRANTIMAGE) remove Makefile
-	vagrant box add -name $(NAME) $<
-
-remove:
-	-vagrant box remove --box-version 0 $(NAME)
+install: $(patsubst %,build/docker/%/.push,$(DOCKER_IMAGES))
 
 clean: remove
-	-rm *.box
-	-rm packer-local.json
-	-rm -rf packer_cache
 	-rm -rf build
