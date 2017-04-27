@@ -28,7 +28,7 @@ export GOROOT="/opt/go"
 mkdir -p $GOPATH
 ARCH=`uname -m | sed 's|i686|386|' | sed 's|x86_64|amd64|'`
 BINTARGETS="x86_64"
-GO_VER=1.7.3
+GO_VER=1.7.5
 
 # Install Golang binary if found in BINTARGETS
 if echo $BINTARGETS | grep -q `uname -m`; then
