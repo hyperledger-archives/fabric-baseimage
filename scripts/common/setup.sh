@@ -27,7 +27,7 @@ export GOROOT="/opt/go"
 # ----------------------------------------------------------------
 mkdir -p $GOPATH
 ARCH=`uname -m | sed 's|i686|386|' | sed 's|x86_64|amd64|'`
-BINTARGETS="x86_64"
+BINTARGETS="x86_64 ppc64le"
 GO_VER=1.7.5
 
 # Install Golang binary if found in BINTARGETS
@@ -49,17 +49,6 @@ then
    export GOROOT_BOOTSTRAP=/tmp/go
    ./make.bash
    export GOROOT="/opt/go"
-# else for ppc64le install go binaries from advanced toolchain
-elif [ $ARCH = ppc64le ]
-then
-   wget --quiet ftp://ftp.unicamp.br/pub/linuxpatch/toolchain/at/ubuntu/dists/xenial/at10.0/binary-ppc64el/advance-toolchain-golang-at_10.0-1_ppc64el.deb
-   dpkg -i advance-toolchain-golang-at_10.0-1_ppc64el.deb
-   rm advance-toolchain-golang-at_10.0-1_ppc64el.deb
-
-   update-alternatives --install /usr/bin/go go /usr/local/go/bin/go 10
-   update-alternatives --install /usr/bin/gofmt gofmt /usr/local/go/bin/gofmt 10
-
-   ln -s /usr/local/go $GOROOT
 # Otherwise, build Golang from source
 else
    # Install Golang 1.6 binary as a bootstrap to compile the Golang GO_VER source
