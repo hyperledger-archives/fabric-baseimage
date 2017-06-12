@@ -20,3 +20,6 @@ If a component is found to be both broadly applicable and expensive to build JIT
 
 * "make docker" will build the docker images and commit it to your local environment; e.g. "hyperledger/fabric-baseimage". The docker image is also tagged with architecture and release details.
 * "make install" build build the docker images and push them to dockerhub.
+
+<a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.
+s

@@ -1,5 +1,9 @@
 #!/bin/bash
-
+#
+# Copyright Greg Haskins All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
 # ALERT: if you encounter an error like:
 # error: [Errno 1] Operation not permitted: 'cf_update.egg-info/requires.txt'
 # The proper fix is to remove any "root" owned directories under your update-cli directory

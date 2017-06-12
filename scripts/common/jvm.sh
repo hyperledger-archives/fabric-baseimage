@@ -1,5 +1,9 @@
 #!/bin/bash
-
+#
+# Copyright Greg Haskins All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
 # Stop on first error
 set -e
 set -x
