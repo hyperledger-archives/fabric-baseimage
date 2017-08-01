@@ -5,4 +5,4 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 apt-get update
-apt-get install -y wget
+apt-get install -y wget tzdata
