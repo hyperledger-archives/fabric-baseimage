@@ -31,8 +31,8 @@ export GOROOT="/opt/go"
 # ----------------------------------------------------------------
 mkdir -p $GOPATH
 ARCH=`uname -m | sed 's|i686|386|' | sed 's|x86_64|amd64|'`
-BINTARGETS="x86_64 ppc64le"
-GO_VER=1.7.5
+BINTARGETS="x86_64 ppc64le s390x"
+GO_VER=1.9
 
 # Install Golang binary if found in BINTARGETS
 if echo $BINTARGETS | grep -q `uname -m`; then
@@ -41,18 +41,6 @@ if echo $BINTARGETS | grep -q `uname -m`; then
    tar -xvf go${GO_VER}.linux-${ARCH}.tar.gz
    mv go $GOROOT
    chmod 775 $GOROOT
-# else for s390x install go binaries that include Crypto ECC optimizations
-elif [ $ARCH = s390x ]
-then
-   cd /tmp
-   wget --quiet --no-check-certificate https://storage.googleapis.com/golang/go1.7.1.linux-s390x.tar.gz
-   tar -xvf go1.7.1.linux-s390x.tar.gz
-   cd /opt
-   git clone -b 1.7elliptic  https://github.com/billotosyr/go.git
-   cd go/src
-   export GOROOT_BOOTSTRAP=/tmp/go
-   ./make.bash
-   export GOROOT="/opt/go"
 # Otherwise, build Golang from source
 else
    # Install Golang 1.6 binary as a bootstrap to compile the Golang GO_VER source
