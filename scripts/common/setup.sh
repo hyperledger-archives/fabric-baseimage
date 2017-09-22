@@ -79,6 +79,9 @@ rm -f node*.tar.gz
 wget --quiet https://nodejs.org/dist/v$NODE_VER/$NODE_PKG
 cd /usr/local && sudo tar --strip-components 1 -xzf $SRC_PATH
 
+# Install python2.7
+apt-get -y install python
+
 # ----------------------------------------------------------------
 # Install protocol buffer support
 #
