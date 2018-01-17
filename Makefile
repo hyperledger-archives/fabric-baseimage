@@ -7,7 +7,7 @@
 DOCKER_NS ?= hyperledger
 BASENAME ?= $(DOCKER_NS)/fabric
 VERSION ?= 0.4.3
-IS_RELEASE=true
+IS_RELEASE=false
 
 ARCH=$(shell uname -m)
 BASE_VERSION ?= $(ARCH)-$(VERSION)
