@@ -42,12 +42,17 @@ if [ "$1" = "${KAFKA_EXE}" ]; then
     export KAFKA_BROKER_ID=-1
   fi
 
+  # add newline to end of server.properties if missing
+  tail -c 1 ${KAFKA_SERVER_PROPERTIES} | read -r _ || printf "\n" >> ${KAFKA_SERVER_PROPERTIES}
+
   # update server.properties by searching for envinroment variables named
   # KAFKA_* and converting them to properties in the kafka server properties file.
   for ENV_ENTRY in $(env | grep "^KAFKA_") ; do
     # skip some entries that should do not belong in server.properties
     if [[ $ENV_ENTRY =~ ^KAFKA_HOME= ]] ; then continue ; fi
     if [[ $ENV_ENTRY =~ ^KAFKA_EXE= ]] ; then continue ; fi
+    if [[ $ENV_ENTRY =~ ^KAFKA_VERSION= ]] ; then continue ; fi
+    if [[ $ENV_ENTRY =~ ^KAFKA_DOWNLOAD_SHA1= ]] ; then continue ; fi
     if [[ $ENV_ENTRY =~ ^KAFKA_SERVER_PROPERTIES= ]] ; then continue ; fi
     if [[ $ENV_ENTRY =~ ^KAFKA_ADVERTISED_HOST_NAME_COMMAND= ]] ; then continue ; fi
     if [[ $ENV_ENTRY =~ ^KAFKA_ADVERTISED_PORT_COMMAND= ]] ; then continue ; fi
