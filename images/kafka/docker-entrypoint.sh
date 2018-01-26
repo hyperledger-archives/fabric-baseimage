@@ -42,6 +42,11 @@ if [ "$1" = "${KAFKA_EXE}" ]; then
     export KAFKA_BROKER_ID=-1
   fi
 
+  # disable time based log retention by default
+  if [ -z "$KAFKA_LOG_RETENTION_MS" ] ; then
+    export KAFKA_LOG_RETENTION_MS=-1
+  fi
+
   # add newline to end of server.properties if missing
   tail -c 1 ${KAFKA_SERVER_PROPERTIES} | read -r _ || printf "\n" >> ${KAFKA_SERVER_PROPERTIES}
 
