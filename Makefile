@@ -7,7 +7,7 @@
 DOCKER_NS ?= hyperledger
 BASENAME ?= $(DOCKER_NS)/fabric
 VERSION ?= 0.4.6
-IS_RELEASE=false
+IS_RELEASE=true
 
 ARCH=$(shell uname -m)
 BASE_VERSION ?= $(ARCH)-$(VERSION)
@@ -48,7 +48,7 @@ endif
 DBUILD = docker build $(DOCKER_BUILD_FLAGS)
 
 # NOTE this is for building the dependent images (kafka, zk, couchdb)
-BASE_IMAGE_RELEASE=0.3.2
+BASE_IMAGE_RELEASE=0.4.5
 BASE_DOCKER_NS ?= hyperledger
 BASE_DOCKER_TAG=$(ARCH)-$(BASE_IMAGE_RELEASE)
 
