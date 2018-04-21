@@ -9,7 +9,7 @@ BASENAME ?= $(DOCKER_NS)/fabric
 VERSION ?= 0.4.8
 IS_RELEASE=false
 
-ARCH=$(shell uname -m)
+ARCH=$(shell go env GOARCH)
 BASE_VERSION ?= $(ARCH)-$(VERSION)
 
 ifneq ($(IS_RELEASE),true)
@@ -19,7 +19,7 @@ else
 DOCKER_TAG=$(BASE_VERSION)
 endif
 
-DOCKER_BASE_x86_64=ubuntu:xenial
+DOCKER_BASE_amd64=ubuntu:xenial
 DOCKER_BASE_s390x=s390x/debian:jessie
 DOCKER_BASE_ppc64le=ppc64le/ubuntu:xenial
 DOCKER_BASE_armv7l=armv7/armhf-ubuntu
@@ -48,9 +48,8 @@ endif
 DBUILD = docker build $(DOCKER_BUILD_FLAGS)
 
 # NOTE this is for building the dependent images (kafka, zk, couchdb)
-BASE_IMAGE_RELEASE=0.4.5
+BASE_IMAGE_RELEASE=0.4.8
 BASE_DOCKER_NS ?= hyperledger
-BASE_DOCKER_TAG=$(ARCH)-$(BASE_IMAGE_RELEASE)
 
 ifeq ($(DOCKER_BASE), )
 $(error "Architecture \"$(ARCH)\" is unsupported")
@@ -115,7 +114,7 @@ build/image/%/Dockerfile: images/%/Dockerfile.in
 	@cat $< \
 		| sed -e 's/_BASE_NS_/$(BASE_DOCKER_NS)/g' \
 		| sed -e 's/_NS_/$(DOCKER_NS)/g' \
-		| sed -e 's/_BASE_TAG_/$(BASE_DOCKER_TAG)/g' \
+		| sed -e 's/_BASE_TAG_/$(DOCKER_TAG)/g' \
 		| sed -e 's/_TAG_/$(BASE_VERSION)/g' \
 		> $@
 	@echo LABEL $(BASE_DOCKER_LABEL).version=$(PROJECT_VERSION) \\>>$@
@@ -125,7 +124,7 @@ build/image/%/.dummy: Makefile build/image/%/payload build/image/%/Dockerfile
 	$(eval TARGET = ${patsubst build/image/%/.dummy,%,${@}})
 	@echo "Building docker $(TARGET)-image"
 	$(DBUILD) -t $(DOCKER_NS)/fabric-$(TARGET) $(@D)
-	docker tag $(DOCKER_NS)/fabric-$(TARGET) $(DOCKER_NS)/fabric-$(TARGET):$(BASE_VERSION)
+	docker tag $(DOCKER_NS)/fabric-$(TARGET) $(DOCKER_NS)/fabric-$(TARGET):$(DOCKER_TAG)
 	@touch $@
 
 clean:
