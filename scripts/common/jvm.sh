@@ -16,9 +16,9 @@ ARCH=`uname -m | sed 's|i686|386|' | sed 's|x86_64|amd64|'`
 if [ $ARCH = s390x -o $ARCH = ppc64le ]; then
     # Java is required for node.bin below. InstallAnywhere requirement.
     # See https://github.com/ibmruntimes/ci.docker/blob/master/ibmjava/8-sdk/s390x/ubuntu/Dockerfile
-    JAVA_VERSION=1.8.0_sr5fp7
-    ESUM_s390x="5e0755ef8475920671840bb13b61769901cd632797e3191cddbed0633ae3276d"
-    ESUM_ppc64le="6dba534ac781d04844e686d510b13b5efff0d1890c5840ab9d3c18a9bacacb0f"
+    JAVA_VERSION=1.8.0_sr5fp16
+    ESUM_s390x="5086a317a2fe0a42b1ea9a559dc87a5a349b25f1debcd109777acb7fa7349b20"
+    ESUM_ppc64le="c52b806779e0c7cc432cea225d4c26e8c3a2d39f6b8535263cc44ea127f7f786"
     eval ESUM=\$ESUM_$ARCH
     BASE_URL="https://public.dhe.ibm.com/ibmdl/export/pub/systems/cloud/runtimes/java/meta/"
     YML_FILE="sdk/linux/$ARCH/index.yml"
