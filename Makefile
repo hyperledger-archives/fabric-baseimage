@@ -20,7 +20,7 @@ DOCKER_TAG=$(BASE_VERSION)
 endif
 
 DOCKER_BASE_amd64=ubuntu:xenial
-DOCKER_BASE_s390x=s390x/debian:jessie
+DOCKER_BASE_s390x=s390x/debian:stretch
 DOCKER_BASE_ppc64le=ppc64le/ubuntu:xenial
 DOCKER_BASE_armv7l=armv7/armhf-ubuntu
 
