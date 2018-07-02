@@ -52,15 +52,16 @@ IMAGES="fabric-baseos fabric-baseimage fabric-kafka fabric-zookeeper fabric-couc
 for image in ${IMAGES}; do
   docker pull ${NS}/${image}:amd64-${VERSION} || missing
   docker pull ${NS}/${image}:s390x-${VERSION} || missing
+  docker pull ${NS}/${image}:ppc64le-${VERSION} || missing
 done
 
 # push the multiarch manifest and tag with just $VERSION and 'latest'
 for image in ${IMAGES}; do
   manifest-tool --username ${USER} --password ${PASSWORD} push from-args\
-   --platforms linux/amd64,linux/s390x --template "${NS}/${image}:ARCH-${VERSION}"\
+   --platforms linux/amd64,linux/s390x,linux/ppc64le --template "${NS}/${image}:ARCH-${VERSION}"\
    --target "${NS}/${image}:${VERSION}"
   manifest-tool --username ${USER} --password ${PASSWORD} push from-args\
-   --platforms linux/amd64,linux/s390x --template "${NS}/${image}:ARCH-${VERSION}"\
+   --platforms linux/amd64,linux/s390x,linux/ppc64le --template "${NS}/${image}:ARCH-${VERSION}"\
    --target "${NS}/${image}:latest"
 done
 
