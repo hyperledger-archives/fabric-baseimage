@@ -105,7 +105,8 @@ build/image/zookeeper/payload:  images/zookeeper/docker-entrypoint.sh
 build/image/kafka/payload:      images/kafka/docker-entrypoint.sh \
 				images/kafka/kafka-run-class.sh
 build/image/couchdb/payload:	images/couchdb/docker-entrypoint.sh \
-				images/couchdb/local.ini \
+				images/couchdb/10-docker-default.ini \
+				images/couchdb/20-fabric-default.ini \
 				images/couchdb/vm.args
 
 .PRECIOUS: build/image/%/Dockerfile
