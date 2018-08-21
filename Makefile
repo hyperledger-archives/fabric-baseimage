@@ -19,6 +19,10 @@ else
 DOCKER_TAG=$(BASE_VERSION)
 endif
 
+LIBICU_amd64=libicu55
+LIBICU_s390x=libicu57
+LIBICU=$(LIBICU_$(ARCH))
+
 DOCKER_BASE_amd64=ubuntu:xenial
 DOCKER_BASE_s390x=s390x/debian:stretch
 DOCKER_BASE_ppc64le=ppc64le/ubuntu:xenial
@@ -117,6 +121,7 @@ build/image/%/Dockerfile: images/%/Dockerfile.in
 		| sed -e 's/_NS_/$(DOCKER_NS)/g' \
 		| sed -e 's/_BASE_TAG_/$(DOCKER_TAG)/g' \
 		| sed -e 's/_TAG_/$(BASE_VERSION)/g' \
+		| sed -e 's/_LIBICU_/$(LIBICU)/g' \
 		> $@
 	@echo LABEL $(BASE_DOCKER_LABEL).version=$(PROJECT_VERSION) \\>>$@
 	@echo "     " $(BASE_DOCKER_LABEL).base.version=$(BASE_VERSION)>>$@
