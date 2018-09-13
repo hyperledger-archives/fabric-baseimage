@@ -6,7 +6,7 @@
 
 DOCKER_NS ?= hyperledger
 BASENAME ?= $(DOCKER_NS)/fabric
-VERSION ?= 0.4.13
+VERSION ?= 0.4.12
 IS_RELEASE=false
 
 ARCH=$(shell go env GOARCH)
@@ -52,7 +52,6 @@ endif
 DBUILD = docker build $(DOCKER_BUILD_FLAGS)
 
 # NOTE this is for building the dependent images (kafka, zk, couchdb)
-BASE_IMAGE_RELEASE=0.4.8
 BASE_DOCKER_NS ?= hyperledger
 
 ifeq ($(DOCKER_BASE), )
