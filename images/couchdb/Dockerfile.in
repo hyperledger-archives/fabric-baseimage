@@ -87,7 +87,7 @@ RUN set -xe \
       done; \
     done
 
-ENV COUCHDB_VERSION 2.2.0
+ENV COUCHDB_VERSION 2.1.1
 
 # Download dev dependencies
 RUN buildDeps=' \
@@ -126,7 +126,12 @@ COPY payload/20-fabric-default.ini /opt/couchdb/etc/default.d/
 COPY payload/docker-entrypoint.sh /
 
 # Setup directories and permissions
-RUN chown -R couchdb:couchdb /opt/couchdb/etc/default.d/ /opt/couchdb/etc/vm.args
+RUN chmod +x /docker-entrypoint.sh \
+ && chown -R couchdb:couchdb /opt/couchdb/etc/default.d/ /opt/couchdb/etc/vm.args \
+ && chmod -R 0770 /opt/couchdb/data \
+ && chmod 664 /opt/couchdb/etc/*.ini \
+ && chmod 664 /opt/couchdb/etc/default.d/*.ini \
+ && chmod 775 /opt/couchdb/etc/*.d
 
 WORKDIR /opt/couchdb
 EXPOSE 5984 4369 9100

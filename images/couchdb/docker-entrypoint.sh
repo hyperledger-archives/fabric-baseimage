@@ -25,14 +25,6 @@ if [ "$1" = 'couchdb' ]; then
 fi
 
 if [ "$1" = '/opt/couchdb/bin/couchdb' ]; then
-	# we need to set the permissions here because docker mounts volumes as root
-	chown -R couchdb:couchdb /opt/couchdb
-
-	chmod -R 0770 /opt/couchdb/data
-
-	chmod 664 /opt/couchdb/etc/*.ini
-	chmod 664 /opt/couchdb/etc/default.d/*.ini
-	chmod 775 /opt/couchdb/etc/*.d
 
 	if [ ! -z "$NODENAME" ] && ! grep "couchdb@" /opt/couchdb/etc/vm.args; then
 		echo "-name couchdb@$NODENAME" >> /opt/couchdb/etc/vm.args
