@@ -6,7 +6,7 @@
 
 DOCKER_NS ?= hyperledger
 BASENAME ?= $(DOCKER_NS)/fabric
-VERSION ?= 0.4.13
+VERSION ?= 0.4.14
 IS_RELEASE=true
 
 ARCH=$(shell go env GOARCH)
