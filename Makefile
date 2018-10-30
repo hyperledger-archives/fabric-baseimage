@@ -3,6 +3,17 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 #
+# -------------------------------------------------------------
+# This makefile defines the following targets
+#
+#   - all - Builds the baseimages and the thirdparty images
+#   - docker - Builds the baseimages (baseimage,basejvm,baseos)
+#   - dependent-images - Builds the thirdparty images (couchdb,kafka,zookeeper)
+#   - couchdb - Builds the couchdb image
+#   - kafka - Builds the kafka image
+#   - zookeeper - Builds the zookeeper image
+#   - install - Builds the baseimage,baseos,basejvm and publishes the images to dockerhub
+#   - clean - Cleans all the docker images
 
 DOCKER_NS ?= hyperledger
 BASENAME ?= $(DOCKER_NS)/fabric
