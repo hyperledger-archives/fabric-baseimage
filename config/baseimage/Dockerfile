@@ -3,7 +3,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 #
-FROM _NS_/fabric-basejvm:_TAG_
+FROM adoptopenjdk/openjdk8-openj9:jdk8u212-b04_openj9-0.14.2
 COPY scripts /tmp/scripts
 RUN cd /tmp/scripts && \
     common/packages.sh && \

@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # Based on https://github.com/apache/couchdb-docker/blob/master/2.1.1/Dockerfile
 
-FROM _BASE_NS_/fabric-baseimage:_BASE_TAG_
+FROM debian:stretch-20190610-slim
 
 # Add CouchDB user account
 RUN groupadd -g 5984 -r couchdb && useradd -u 5984 -d /opt/couchdb -g couchdb couchdb
@@ -12,9 +12,11 @@ RUN apt-get update -y && apt-get install -y --no-install-recommends \
     curl \
     erlang-nox \
     erlang-reltool \
-    _LIBICU_ \
+    libicu57 \
     libmozjs185-1.0 \
     openssl \
+    dirmngr \
+    gnupg \
   && rm -rf /var/lib/apt/lists/*
 
 # grab gosu for easy step-down from root and tini for signal handling
@@ -119,11 +121,11 @@ RUN buildDeps=' \
  && chown -R couchdb:couchdb /opt/couchdb
 
 # Add configuration
-COPY payload/vm.args /opt/couchdb/etc/
-COPY payload/10-docker-default.ini /opt/couchdb/etc/default.d/
-COPY payload/20-fabric-default.ini /opt/couchdb/etc/default.d/
+COPY ./vm.args /opt/couchdb/etc/
+COPY ./10-docker-default.ini /opt/couchdb/etc/default.d/
+COPY ./20-fabric-default.ini /opt/couchdb/etc/default.d/
 
-COPY payload/docker-entrypoint.sh /
+COPY ./docker-entrypoint.sh /
 
 # Setup directories and permissions
 RUN chmod +x /docker-entrypoint.sh \
