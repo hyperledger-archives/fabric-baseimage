@@ -19,7 +19,7 @@ ENV ZOO_USER=zookeeper \
     ZOO_CONF_DIR=/conf
 
 ARG GPG_KEY=C823E3E5B12AF29C67F81976F5CECB3CB5E9BD2D
-ARG DISTRO_NAME=zookeeper-3.4.9
+ARG DISTRO_NAME=zookeeper-3.4.14
 
 # Download Apache Zookeeper, verify its PGP signature, untar and clean up
 RUN set -x \
@@ -30,7 +30,7 @@ RUN set -x \
 
 
 FROM adoptopenjdk/openjdk8-openj9:jre8u212-b04_openj9-0.14.2
-ARG DISTRO_NAME=zookeeper-3.4.9
+ARG DISTRO_NAME=zookeeper-3.4.14
 ENV ZOO_USER=zookeeper \
     ZOO_CONF_DIR=/conf \
     ZOO_DATA_DIR=/data \

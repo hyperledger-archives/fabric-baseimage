@@ -89,7 +89,7 @@ RUN set -xe \
       done; \
     done
 
-ENV COUCHDB_VERSION 2.2.0
+ENV COUCHDB_VERSION 2.3.1
 
 # Download dev dependencies
 RUN buildDeps=' \

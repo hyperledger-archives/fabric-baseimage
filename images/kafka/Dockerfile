@@ -5,17 +5,20 @@
 #
 FROM debian:stretch-slim as download
 RUN apt-get update \
-    && apt-get install -y curl tar
+    && apt-get install -y curl \
+    tar \
+    gnupg;
 
 ENV SCALA_VERSION=2.11 \
-    KAFKA_VERSION=1.0.0 \
-    KAFKA_DOWNLOAD_SHA1=04A88D7B9830E99841A13EC97809E58D0691D185
+    KAFKA_VERSION=1.0.2 \
+    KAFKA_DOWNLOAD_SHA1=4B56E63F9E5E69BCAA0E15313F75F1B15F6CF1E4
 
-RUN curl -fSL "http://archive.apache.org/dist/kafka/${KAFKA_VERSION}/kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz" -o kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz \
-    && echo "${KAFKA_DOWNLOAD_SHA1}  kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz" | sha1sum -c - \
-    && tar xfz kafka_"$SCALA_VERSION"-"$KAFKA_VERSION".tgz -C /opt \
-    && mv /opt/kafka_"$SCALA_VERSION"-"$KAFKA_VERSION" /opt/kafka \
-    && rm kafka_"$SCALA_VERSION"-"$KAFKA_VERSION".tgz
+RUN curl -fSL "http://archive.apache.org/dist/kafka/${KAFKA_VERSION}/kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz" -o kafka.tgz
+
+RUN echo "${KAFKA_DOWNLOAD_SHA1}  kafka.tgz" | sha1sum -c - \
+    && mkdir /opt/kafka \
+    && tar xfz kafka.tgz -C /opt/kafka --strip-components=1 \
+    && rm -f kafka.tgz;
 
 FROM adoptopenjdk/openjdk8-openj9:jre8u212-b04_openj9-0.14.2
 COPY --from=download /opt/kafka /opt/kafka
