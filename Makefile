@@ -31,13 +31,6 @@ else
 DOCKER_TAG=$(BASE_VERSION)
 endif
 
-DOCKER_BASE_amd64=ubuntu:xenial
-DOCKER_BASE_s390x=s390x/debian:stretch
-DOCKER_BASE_ppc64le=ppc64le/ubuntu:xenial
-DOCKER_BASE_armv7l=armv7/armhf-ubuntu
-
-DOCKER_BASE=$(DOCKER_BASE_$(ARCH))
-
 ifneq ($(http_proxy),)
 DOCKER_BUILD_FLAGS+=--build-arg 'http_proxy=$(http_proxy)'
 endif
@@ -61,10 +54,6 @@ DBUILD = docker build $(DOCKER_BUILD_FLAGS)
 
 # NOTE this is for building the dependent images (kafka, zk, couchdb)
 BASE_DOCKER_NS ?= hyperledger
-
-ifeq ($(DOCKER_BASE), )
-$(error "Architecture \"$(ARCH)\" is unsupported")
-endif
 
 DOCKER_IMAGES = baseos baseimage
 DEPENDENT_IMAGES = couchdb kafka zookeeper
