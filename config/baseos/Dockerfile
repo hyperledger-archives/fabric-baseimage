@@ -3,7 +3,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 #
-FROM debian:stretch-20190610-slim
+FROM debian:buster-20190910-slim
 COPY scripts /tmp/scripts
 RUN cd /tmp/scripts && \
     common/init.sh && \

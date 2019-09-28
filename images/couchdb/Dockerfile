@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # Based on https://github.com/apache/couchdb-docker/blob/master/2.1.1/Dockerfile
 
-FROM debian:stretch-20190610-slim
+FROM debian:stretch-20190910-slim
 
 # Add CouchDB user account
 RUN groupadd -g 5984 -r couchdb && useradd -u 5984 -d /opt/couchdb -g couchdb couchdb
