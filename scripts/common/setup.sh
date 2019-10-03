@@ -32,7 +32,7 @@ export GOROOT="/opt/go"
 mkdir -p $GOPATH
 ARCH=`uname -m | sed 's|i686|386|' | sed 's|x86_64|amd64|'`
 BINTARGETS="x86_64 ppc64le s390x"
-GO_VER=1.12.5
+GO_VER=1.11.5
 
 # Install Golang binary if found in BINTARGETS
 if echo $BINTARGETS | grep -q `uname -m`; then
@@ -67,7 +67,8 @@ EOF
 # ----------------------------------------------------------------
 # Install NodeJS
 # ----------------------------------------------------------------
-NODE_VER=8.11.3
+NODE_VER=8.16.1
+NPM_VER=6.11.3
 
 ARCH=`uname -m | sed 's|i686|x86|' | sed 's|x86_64|x64|'`
 NODE_PKG=node-v$NODE_VER-linux-$ARCH.tar.gz
@@ -78,6 +79,9 @@ cd /tmp
 rm -f node*.tar.gz
 wget --quiet https://nodejs.org/dist/v$NODE_VER/$NODE_PKG
 cd /usr/local && sudo tar --strip-components 1 -xzf $SRC_PATH
+
+# update npm to latest
+npm install -g npm@$NPM_VER
 
 # Install python2.7
 apt-get -y install python
