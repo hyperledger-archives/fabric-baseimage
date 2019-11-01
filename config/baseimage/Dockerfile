@@ -13,5 +13,4 @@ RUN cd /tmp/scripts && \
     rm -rf /tmp/scripts
 ENV GOPATH=/opt/gopath
 ENV GOROOT=/opt/go
-ENV GOCACHE=off
 ENV PATH=$PATH:$GOROOT/bin:$GOPATH/bin
