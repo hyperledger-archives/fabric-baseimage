@@ -1,0 +1,33 @@
+# Copyright the Hyperledger Fabric cont ributors. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
+name: RELEASE-$(Date:yyyyMMdd)$(Rev:.rrr)
+trigger: none
+pr: none
+
+variables:
+  - group: credentials
+  - name: GOPATH
+    value: $(Agent.BuildDirectory)/go
+  - name: GOVER
+    value: 1.13.4
+
+stages:
+  - stage: BuildAndPushDockerImages
+    dependsOn: []
+    displayName: "Build and Push Fabric Baseimage Docker Images"
+    jobs:
+      - job: Docker
+        pool:
+          vmImage: ubuntu-16.04
+        steps:
+          - template: install_deps.yml
+          - checkout: self
+            path: 'go/src/github.com/hyperledger/fabric'
+            displayName: Checkout Fabric Code
+          - script: ./ci/scripts/publish_docker.sh
+            env:
+              DOCKER_PASSWORD: $(DockerHub-Password)
+              DOCKER_USERNAME: $(DockerHub-Username)
+            displayName: Publish Docker Images

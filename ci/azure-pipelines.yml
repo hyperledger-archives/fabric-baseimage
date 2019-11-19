@@ -1,0 +1,19 @@
+# Copyright the Hyperledger Fabric contributors. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
+name: $(SourceBranchName)-$(Date:yyyyMMdd)$(Rev:.rrr)
+trigger:
+- master
+pr:
+- master
+
+jobs:
+  - job: VerifyBuild
+    pool:
+      vmImage: ubuntu-16.04
+    steps:
+      - checkout: self
+        displayName: Checkout Fabric BaseImage
+      - script: make docker dependent-images
+        displayName: Build Images
