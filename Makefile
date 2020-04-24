@@ -18,18 +18,10 @@
 
 DOCKER_NS ?= hyperledger
 BASENAME ?= $(DOCKER_NS)/fabric
-VERSION ?= 0.4.20
-IS_RELEASE=true
+VERSION ?= 0.4.21
 
 ARCH=$(shell go env GOARCH)
-BASE_VERSION ?= $(ARCH)-$(VERSION)
-
-ifneq ($(IS_RELEASE),true)
-EXTRA_VERSION ?= snapshot-$(shell git rev-parse --short HEAD)
-DOCKER_TAG=$(BASE_VERSION)-$(EXTRA_VERSION)
-else
-DOCKER_TAG=$(BASE_VERSION)
-endif
+DOCKER_TAG ?= $(ARCH)-$(VERSION)
 
 ifneq ($(http_proxy),)
 DOCKER_BUILD_FLAGS+=--build-arg 'http_proxy=$(http_proxy)'
