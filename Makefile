@@ -18,7 +18,7 @@
 
 DOCKER_NS ?= hyperledger
 BASENAME ?= $(DOCKER_NS)/fabric
-VERSION ?= 0.4.21
+VERSION ?= 0.4.22
 
 ARCH=$(shell go env GOARCH)
 DOCKER_TAG ?= $(ARCH)-$(VERSION)
