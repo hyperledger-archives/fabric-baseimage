@@ -1,6 +1,6 @@
 # Copyright Greg Haskins All Rights Reserved
 # SPDX-License-Identifier: Apache-2.0
-# Based on https://github.com/apache/couchdb-docker/blob/master/2.1.1/Dockerfile
+# Based on https://github.com/apache/couchdb-docker/blob/main/2.1.1/Dockerfile
 
 FROM debian:stretch-20190910-slim
 
